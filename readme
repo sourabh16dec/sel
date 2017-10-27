@@ -1,0 +1,71 @@
+package com;
+
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
+
+public class Main {
+
+	public static void main(String[] args) throws InterruptedException, IOException {
+	// TODO Auto-generated method stub
+	System.setProperty("webdriver.chrome.driver", "C:\\Users\\\\Desktop\\chromedriver.exe");
+	WebDriver driver= new ChromeDriver();
+	driver.get("http://www.edx.org"); Thread.sleep(4000);
+	driver.manage().window().maximize();
+	driver.findElement(By.xpath("//*[@id='page']/header/div/div/div/div[3]/nav/a[2]")).click();
+	String s= driver.findElement(By.xpath("//*[@id='register-form']/h2")).getText();
+	System.out.println(s);
+	driver.findElement(By.id("register-email")).sendKeys("");
+	driver.findElement(By.id("register-name")).sendKeys("");
+	driver.findElement(By.id("register-username")).sendKeys("");
+	driver.findElement(By.id("register-password")).sendKeys("");
+	Select dropdown= new Select(driver.findElement(By.id("register-country")));
+	dropdown.selectByValue("IN");
+	Select dropdown1= new Select(driver.findElement(By.id("register-gender")));
+	dropdown1.selectByValue("m");
+	Select dropdown2= new Select(driver.findElement(By.id("register-year_of_birth")));
+	dropdown2.selectByValue("1995");
+	Select dropdown3= new Select(driver.findElement(By.id("register-level_of_education")));
+	dropdown3.selectByValue("b");
+	driver.findElement(By.id("register-goals")).sendKeys("machine learning");
+	driver.findElement(By.xpath("//*[@id='register-honor_code']")).click();
+
+	File f = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+	FileUtils.copyFile(f, new File("C:\\Users\\\\Desktop\\sc.png"));
+	
+
+	
+	driver.close();
+	
+	driver.get("http://www.edx.org");
+	
+	File file=new File("C:\\Users\\\\Desktop\\new.xls");
+	FileInputStream fs= new FileInputStream(file);
+	Workbook wb= new HSSFWorkbook(fs);
+	Sheet sheet=wb.getSheetAt(0);
+	int rowCount = sheet.getLastRowNum()-sheet.getFirstRowNum();
+	for(int i=0;i<=rowCount;i++)
+	{
+	driver.findElement(By.xpath("//*[@id='edit-search-query-60627369']")).clear();
+	driver.findElement(By.xpath("//*[@id='edit-search-query-60627369']")).sendKeys(sheet.getRow(i).getCell(0).getStringCellValue());
+	driver.findElement(By.xpath("//*[@id='primary-menu-bar']/button/span[2]")).click();
+	Thread.sleep(2000);
+	
+	}
+}
+	
+}
+
